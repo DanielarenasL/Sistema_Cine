@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Login</title>
+        <link rel="icon" href="https://i.postimg.cc/Y0hLQQmm/Logo.png" type="image/x-icon">
+        <script src="./login.js" defer></script>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <div id="login" class="overlay">
+            <div class="login-content">
+                <div class="login-head">
+                    <!--<img src="https://i.postimg.cc/Y0hLQQmm/Logo.png" alt="logo LosPerchas">
+                    <h2>Cine Los Perchas</h2>-->
+                </div>
+                <div class="login-body">
+                    <form onsubmit="login(); return false" autocomplete="off">
+                        <input type="text" id="usernameInput" placeholder="Username" autocomplete="off" required>
+                        <input type="password" id="passwordInput" placeholder="Password" autocomplete="off" required>
+                        <button type="submit" id="submit">Log in</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

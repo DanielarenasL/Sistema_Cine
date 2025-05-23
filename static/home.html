@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" href="https://i.postimg.cc/Y0hLQQmm/Logo.png" type="image/x-icon">
+        <script src="./home.js" defer></script>
+        <link rel="stylesheet" href="home.css">
+        <title>Cine LosPerchas</title>
+    </head>
+    <body>
+        <button id="openSidebar">Abrir barra lateral</button>
+  
+        <div id="sidebar" class="sidebar">
+            <button id="closeSidebar" class="close-btn">&times;</button>
+            <h2>Barra lateral</h2>
+            <ul>
+                <li><a href="">Enlace 1</a></li>
+                <li><a onclick="cuenta()">Cuenta</a></li>
+                <li><a onclick="logout()">Log out</a></li>
+            </ul>
+        </div>
+
+        <div id="overlay" class="overlay"></div>
+    </body>
+</html>
