@@ -8,6 +8,7 @@ async function login() {
         if (response.ok) {
             console.log("Inicio de sesión exitoso");
             localStorage.setItem("sesion", "true");
+            localStorage.setItem("username", Username);
             window.location.href = "home.html";
         } else {
             console.error("Error en el inicio de sesión:", response.statusText);

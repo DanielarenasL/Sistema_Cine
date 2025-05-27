@@ -35,18 +35,10 @@ let peliculaSchema = new mongoose.Schema({
     Duracion: Number,
 });
 
-let salaSchema = new mongoose.Schema({
-
-    Numero: Number,
-    Tipo: String,
-    Asientos: Number,
-    Libre: Boolean,
-});
-
 let boletoSchema = new mongoose.Schema({
 
     Hora: Date,
-    Funcion: Object,
+    Funcion: String,
     Asiento: Number,
 });
 
@@ -55,8 +47,7 @@ let funcionSchema = new mongoose.Schema({
     Hora: Date,
     Pelicula: String,
     Sala: Number,
-    Asiento: Number,
-    Tipo: String,
+    Asientos: [Array],
     Precio: Number,
 });
 
@@ -129,7 +120,170 @@ app.post('/register', async (req,res) => {
 
 });
 
+app.get('/getuser', async (req, res) => {
+    try {
 
+        const coleccion = mongoose.model('users', userSchema); 
+
+        const usuarios = await coleccion.findOne({Username: req.query.Username});
+
+        if (!usuarios) {
+            return res.status(404).send("No se encontraron usuarios.");
+        }else {
+            res.status(200).json(usuarios);
+        }
+
+    }catch (error) {
+        console.error("Error al obtener usuarios:", error);
+        res.status(500).send("Error al obtener usuarios.");
+    }
+
+});
+
+app.get('/getpeliculas', async (req, res) => {
+
+    try {
+        const coleccion = mongoose.model('peliculas', peliculaSchema); 
+
+        const peliculas = await coleccion.find({});
+
+        if (peliculas.length === 0) {
+            return res.status(404).send("No se encontraron películas.");
+        }else {
+            res.status(200).json(peliculas);
+        }
+    }catch (error) {
+        console.error("Error al obtener películas:", error);
+        res.status(500).send("Error al obtener películas.");
+    }
+});
+
+app.post('/addpelicula', async (req, res) => {
+    try {
+        const coleccion = mongoose.model('peliculas', peliculaSchema); 
+
+        let { Titulo, Director, Generos, Year, Duracion } = req.body;
+
+        if (!Titulo || !Director || !Generos || !Year || !Duracion) {
+            return res.status(400).send("Todos los campos son obligatorios.");
+        }
+
+        const nuevaPelicula = new coleccion({
+            Titulo,
+            Director,
+            Generos,
+            Year,
+            Duracion
+        });
+
+        await nuevaPelicula.save();
+
+        res.status(201).send("Película agregada exitosamente.");
+    }catch (error) {
+        console.error("Error al agregar película:", error);
+        res.status(500).send("Error al agregar película.");
+    }
+});
+
+app.get('/getfunciones', async (req, res) => {
+
+    try {
+        const coleccion = mongoose.model('funciones', funcionSchema); 
+        const pelicula = req.query.pelicula;
+
+        if (!pelicula) {
+            return res.status(400).send("El parámetro 'pelicula' es obligatorio.");
+        }
+        const funciones = await coleccion.find({Pelicula: pelicula});
+
+        res.status(200).json(funciones);
+    }catch (error) {
+        console.error("Error al obtener funciones:", error);
+        res.status(500).send("Error al obtener funciones.");
+    }
+});
+
+app.post('/addboleto', async (req, res) => {
+    try {
+        const coleccion = mongoose.model('boletos', boletoSchema); 
+
+        let { Hora, Funcion, Asiento } = req.body;
+
+        if (!Hora || !Funcion || !Asiento) {
+            return res.status(400).send("Todos los campos son obligatorios.");
+        }
+
+        let response = new coleccion({
+
+            Hora: new Date(Hora),
+            Funcion,
+            Asiento
+        });
+
+        await response.save();
+        res.status(201).send("Boleto agregado exitosamente.");
+
+    }catch (error) {
+        console.error("Error al agregar boleto:", error);
+    }
+});
+
+app.put('/actualizarfuncion', async (req, res) => {
+    try {
+        const coleccion = mongoose.model('funciones', funcionSchema); 
+
+        let { _id, Asientos} = req.body;
+
+        if (!_id || !Asientos) {
+            return res.status(400).send("Los campos '_id' y 'Asientos' son obligatorios.");
+        }
+
+        let response = await coleccion.findByIdAndUpdate(
+            _id,
+            { Asientos: Asientos },
+            { new: true, runValidators: true }
+        )
+
+        if (!response) {
+            return res.status(404).send("Función no encontrada con el ID proporcionado.");
+        }
+
+        res.status(200).json(response);
+
+    }catch (error) {
+        console.error("Error al actualizar función:", error);
+        res.status(500).send("Error al actualizar función.");
+    }
+
+});
+
+app.post('/addfuncion', async (req, res) => {
+
+    try {
+        const coleccion = mongoose.model('funciones', funcionSchema); 
+
+        let { Hora, Pelicula, Sala, Asientos, Precio } = req.body;
+
+        if (!Hora || !Pelicula || !Sala || !Asientos || !Precio) {
+            return res.status(400).send("Todos los campos son obligatorios.");
+        }
+
+        const nuevaFuncion = new coleccion({
+            Hora,
+            Pelicula,
+            Sala,
+            Asientos,
+            Precio
+        });
+
+        await nuevaFuncion.save();
+
+        res.status(201).send("Función agregada exitosamente.");
+    }catch (error) {
+        console.error("Error al agregar función:", error);
+        res.status(500).send("Error al agregar función.");
+    }
+});
 
 app.listen(PORT,  () => {
     console.log(`Servidor escuchando en http://localhost:${PORT}`);
