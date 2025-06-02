@@ -29,6 +29,7 @@ let userSchema = new mongoose.Schema({
 let peliculaSchema = new mongoose.Schema({
 
     Titulo: String,
+    Imagen: String,
     Director: String,
     Generos: [String],
     Year: Number,
@@ -162,14 +163,15 @@ app.post('/addpelicula', async (req, res) => {
     try {
         const coleccion = mongoose.model('peliculas', peliculaSchema); 
 
-        let { Titulo, Director, Generos, Year, Duracion } = req.body;
+        let { Titulo, Imagen ,Director, Generos, Year, Duracion } = req.body;
 
-        if (!Titulo || !Director || !Generos || !Year || !Duracion) {
+        if (!Titulo || Imagen || !Director || !Generos || !Year || !Duracion) {
             return res.status(400).send("Todos los campos son obligatorios.");
         }
 
         const nuevaPelicula = new coleccion({
             Titulo,
+            Imagen,
             Director,
             Generos,
             Year,
@@ -252,6 +254,38 @@ app.put('/actualizarfuncion', async (req, res) => {
 
     }catch (error) {
         console.error("Error al actualizar función:", error);
+        res.status(500).send("Error al actualizar función.");
+    }
+
+});
+
+app.post('/editAccount', async (req, res) => {
+    try {
+        const coleccion = mongoose.model('user', userSchema)
+
+        if (!req.body.campo || !req.body.email || !req.body.valor) {
+            return res.status(400).send("El campo a modificar, el valor y el gmail son requeridos.");
+        }
+
+        let campo = req.body.campo;
+        let email = req.body.email;
+        let nuevoValor = req.body.valor;
+
+        let response = await coleccion.findOneAndUpdate(
+            { Email: email },
+            { $set: { [campo]: nuevoValor }},
+            { new: true, runValidators: true }
+        )
+
+        if (!response) {
+            return res.status(404).send("Usuario no encontrado con el ID proporcionado.");
+        }
+
+        res.status(200).json(response);
+
+
+    }catch (error) {
+        console.error("Error al actualizar usuario:", error);
         res.status(500).send("Error al actualizar función.");
     }
 

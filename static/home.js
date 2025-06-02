@@ -24,7 +24,6 @@ function logout(){
     window.location.href = "index.html";
     console.log("Sesión cerrada");
 }
-
 async function inicio() {
     try {
         closeBtn.onclick(); // Cierra el sidebar si está abierto
@@ -55,7 +54,11 @@ async function inicio() {
 
         for (let pelicula of data) {
             let peliculaDiv = document.createElement("div");
+            peliculaDiv.id = 'peliculaDiv';
             peliculaDiv.className = "pelicula";
+
+            let imagenPelicula = document.createElement("img");
+            imagenPelicula.src = pelicula.Imagen;
 
             let tituloPelicula = document.createElement("h2");
             tituloPelicula.innerText = pelicula.Titulo;
@@ -77,6 +80,7 @@ async function inicio() {
             comprarboleto.onclick = () => comprarBoleto(tituloPelicula.innerText);
 
             peliculaDiv.appendChild(tituloPelicula);
+            peliculaDiv.appendChild(imagenPelicula);
             peliculaDiv.appendChild(directorPelicula);
             peliculaDiv.appendChild(generosPelicula);
             peliculaDiv.appendChild(yearPelicula);
@@ -335,18 +339,20 @@ async function cuenta() {
         }
 
         // Crea todos los campos y sus botones
-        cuentaContainer.appendChild(crearCampo("Email", data?.Email, "email", true));
-        cuentaContainer.appendChild(crearCampo("Username", data?.Username, "username", true));
-        cuentaContainer.appendChild(crearCampo("Password", "********", "password", true));
-        cuentaContainer.appendChild(crearCampo("Preferences", data?.Preferences, "preferences", false));
-        cuentaContainer.appendChild(crearCampo("History", data?.History, "history", false));
+        cuentaContainer.appendChild(crearCampo("Email", data?.Email, "Email", false));
+        cuentaContainer.appendChild(crearCampo("Username", data?.Username, "Username", true));
+        cuentaContainer.appendChild(crearCampo("Password", "********", "Password", true));
+        cuentaContainer.appendChild(crearCampo("Preferences", data?.Preferences, "Preferences", false));
+        cuentaContainer.appendChild(crearCampo("History", data?.History, "History", false));
 
         document.body.appendChild(cuentaContainer);
 
         // Función para editar campos
         function editarCampo(key, valueSpan) {
+            console.log('Zapato', key);
+            
             let currentValue = valueSpan.innerText;
-            if (key === "password") {
+            if (key === "Password") {
                 currentValue = "";
             }
             let input = document.createElement("input");
@@ -356,8 +362,30 @@ async function cuenta() {
             let saveBtn = document.createElement("button");
             saveBtn.innerText = "Guardar";
             saveBtn.onclick = async function() {
-                // Aquí puedes hacer la petición de actualización al backend si lo deseas
+                let response;
+                let gmail = document.getElementById('cuenta-Email').textContent;
+                console.log(gmail);
+                
+                if (key === "Username") {
+                    response = await fetch(`/editAccount`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            email: gmail,
+                            campo: key,
+                            valor: input.value
+                        })
+                    });
 
+                    if (!response) {
+                        return res.status(404).send("Usuario no encontrado con el ID proporcionado.");
+                    }
+                    alert('Campo modificado')
+                }
+                console.log(input.value);
+                
                 valueSpan.innerText = (key === "password") ? "********" : input.value;
                 valueSpan.style.display = "";
                 input.remove();
@@ -380,3 +408,7 @@ function IsoToHour(iso) {
     console.log(hora);
     return hora;
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  inicio();
+});
