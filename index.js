@@ -6,6 +6,7 @@ const { connection } = require('./connection');
 const mongoose = require('mongoose');
 const { object } = require('webidl-conversions');
 const { ObjectId } = require('bson');
+const math = require('mathjs');
 
 dotenv.config();
 
@@ -18,12 +19,11 @@ async function conexion() {
 }
 conexion();
 let userSchema = new mongoose.Schema({
-
     Email: String,
     Username: String,
     Password: String,
-    Prefences: [String],
-    History: [ObjectId], 
+    Prefences: Array,
+    History: [ObjectId],
 });
 
 let peliculaSchema = new mongoose.Schema({
@@ -64,7 +64,7 @@ app.get('/login', async (req, res) => {
 
         const coleccion = mongoose.model('users', userSchema); 
 
-        const usuario = await coleccion.findOne({});
+        const usuario = await coleccion.findOne({ Username: Username });
 
         if (!usuario) {
             return res.status(404).send("Usuario no encontrado.");
@@ -102,6 +102,11 @@ app.post('/register', async (req,res) => {
         const saltRounds = 10;
         Password = bcrypt.hashSync(Password, saltRounds);
 
+        console.log("Email:", Email);
+        console.log("Username:", Username);
+        console.log("Password:", Password);
+
+
         const nuevoUsuario = new User({
             Email, 
             Username,
@@ -120,6 +125,8 @@ app.post('/register', async (req,res) => {
     }
 
 });
+
+
 
 app.get('/getuser', async (req, res) => {
     try {
@@ -291,6 +298,45 @@ app.post('/editAccount', async (req, res) => {
 
 });
 
+app.put('/addToHistory', async (req, res) => {
+    try {
+
+        const coleccion = mongoose.model('users', userSchema); 
+
+        let { Username, BoletoId } = req.body;
+
+        console.log("Username: ", Username);
+        console.log("BoletoId: ", BoletoId);
+
+        BoletoId = new ObjectId(BoletoId);
+
+        if (!Username || !BoletoId) {
+            return res.status(400).send("Los campos 'Username' y 'BoletoId' son obligatorios.");
+        }
+
+        const usuario = await coleccion.findOne({ Username: Username});
+
+        if (!usuario) {
+            return res.status(404).send("Usuario no encontrado.");
+        }
+
+        let response = await coleccion.findOneAndUpdate(
+            { Username: Username },
+            { $push: { History: BoletoId } },
+            { new: true, runValidators: true }
+        )
+
+        if (!response) {
+            return res.status(404).send("No se pudo agregar al historial.");
+        }
+
+    }catch (error) {
+        console.error("Error al agregar a historial:", error);
+        res.status(500).send("Error al agregar a historial.");
+    }
+
+});
+
 app.post('/addfuncion', async (req, res) => {
 
     try {
@@ -322,3 +368,5 @@ app.post('/addfuncion', async (req, res) => {
 app.listen(PORT,  () => {
     console.log(`Servidor escuchando en http://localhost:${PORT}`);
 });
+
+

@@ -24,6 +24,30 @@ function logout(){
     window.location.href = "index.html";
     console.log("Sesión cerrada");
 }
+
+async function valorar(){
+    try {
+
+        if(peliculaContainer) {
+            return;
+        }
+
+        let peliculaContainer = document.createElement("div");
+        peliculaContainer.id = "pelicula-container";
+
+        let pelicula = document.createElement("div");
+        let titulo = document.createElement("h1");
+
+        let image = document.createElement("img");
+
+        let valorar = document.createElement
+
+    }catch (error) {
+
+    }
+}
+
+
 async function inicio() {
     try {
         closeBtn.onclick(); // Cierra el sidebar si está abierto
@@ -216,6 +240,7 @@ async function comprarBoleto(tituloPelicula) {
                 const send = document.createElement("button");
                 send.innerText = "Comprar Boletos";
                 send.onclick = () => confirmarcompra(funcionSeleccionada);
+
                 detallesFuncion.appendChild(send);
 
             } else {
@@ -280,6 +305,15 @@ async function confirmarcompra(funcion) {
             throw new Error("Error al actualizar la función");
         }
 
+        let username = localStorage.getItem("username");
+
+        let response = await fetch('/addToHistory', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ BoletoId: _id, Username: username })
+        });
 
     }catch (error) {
         console.error("Error al confirmar compra:", error);
@@ -304,7 +338,25 @@ async function cuenta() {
 
         let response = await fetch(`/getuser?Username=${localStorage.getItem("username")}`);
         let data = await response.json();
-        console.log(data);
+
+        let preferencias = data.Prefences;
+        preferencias = preferencias.map(item => [item]);
+        
+        if (preferencias.length > 0) {
+            for(let i = 0; i < preferencias.length; i++) {
+                preferencias[i].unshift(i+1);
+            }
+        }
+        preferencias.sort((a, b) => b[1] - a[1]);
+        console.log(preferencias);
+        let generos = ["Acción", "Terror", "Comedia", "Romance", "Ciencia Ficción", "Anime", "Infantil", "Drama", "Fantasia"]
+
+        let gustos = [];
+
+        for (let i = 0; i < 3; i++) {
+            let id = preferencias[i][0];
+            gustos.push(generos[id - 1]);
+        }
 
         let titulo = document.createElement("h1");
         titulo.innerText = "Mi cuenta";
@@ -342,7 +394,7 @@ async function cuenta() {
         cuentaContainer.appendChild(crearCampo("Email", data?.Email, "Email", false));
         cuentaContainer.appendChild(crearCampo("Username", data?.Username, "Username", true));
         cuentaContainer.appendChild(crearCampo("Password", "********", "Password", true));
-        cuentaContainer.appendChild(crearCampo("Preferences", data?.Preferences, "Preferences", false));
+        cuentaContainer.appendChild(crearCampo("Preferences", gustos, "Preferences", false));
         cuentaContainer.appendChild(crearCampo("History", data?.History, "History", false));
 
         document.body.appendChild(cuentaContainer);

@@ -15,13 +15,11 @@ async function register() {
                 Password: password
             })
         });
-        const data = await response.json();
+
         if (response.ok) {
             alert('Registro exitoso. Ahora puedes iniciar sesión.');
             window.location.href = 'index.html';
-        } else {
-            alert(data.message || 'Error en el registro');
-        }
+        } 
     } catch (error) {
         alert('Error de conexión');
     }
