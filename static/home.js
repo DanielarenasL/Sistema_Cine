@@ -27,23 +27,104 @@ function logout(){
 
 async function valorar(){
     try {
+        let historial = await fetch('/getuser?Username=' + localStorage.getItem("username"));
+        if(!historial) {
+            throw new Error("No se pudo obtener el historial del usuario");
+        }
+        historial = await historial.json();
+        historial = historial.History;
 
-        if(peliculaContainer) {
-            return;
+        historial = historial.splice(',');
+
+        historial = [...new Set(historial)];
+
+        for (let j = 0; j < historial.length; j++) {
+            let movie = await fetch(`/getpeliculabyFuncion?id=${historial[j]}`);
+
+            if (!movie.ok) {
+                throw new Error("Error al obtener la película");
+            }
+            movie = await movie.json();
+            console.log(movie);
+
+            let cuentaContainer = document.getElementById("cuenta-container");
+            let inicioContainer = document.getElementById("inicio-container");
+            let peliculaContainer = document.getElementById("pelicula-container");
+            if (peliculaContainer) { // Asegúrate de que el elemento exista antes de intentar eliminarlo
+                peliculaContainer.remove();
+            }
+
+            if (cuentaContainer) { // Asegúrate de que el elemento exista antes de intentar eliminarlo
+                cuentaContainer.remove();
+            } else if (inicioContainer) { // Asegúrate de que el elemento exista antes de intentar eliminarlo
+                inicioContainer.remove();
+            }
+            
+
+            peliculaContainer = document.createElement("div");
+            peliculaContainer.id = "pelicula-container";
+
+
+            let pelicula = document.createElement("div");
+            let titulo = document.createElement("h1");
+            titulo.innerText = movie.Titulo;
+
+            let image = document.createElement("img");
+            image.src = movie.Imagen;
+
+            let maxStars = 5; // Número máximo de estrellas
+            const ratingDiv = document.createElement("div");
+            ratingDiv.classList.add("rating"); // Add the class for styling
+            let ratingValue = 0;
+
+            for (let i = maxStars; i >= 1; i--) {
+                // Create the input element for the star
+                const starInput = document.createElement("input");
+                starInput.type = "radio";
+                starInput.name = "rating";
+                starInput.value = i;
+                starInput.id = `star${i}`;
+
+                starInput.addEventListener("change", (event) => {
+                    ratingValue = parseInt(event.target.value); // Convertir a número entero
+                    console.log(`Calificación seleccionada para ${movie.Titulo}:`, ratingValue);
+                    
+                });
+
+                // Create the label element for the star
+                let starLabel = document.createElement("label");
+                starLabel.htmlFor = `star${i}`;
+
+                // Append input and label to the rating div
+                ratingDiv.appendChild(starInput);
+                ratingDiv.appendChild(starLabel);
+            }
+            pelicula.appendChild(titulo);
+            pelicula.appendChild(image);
+            pelicula.appendChild(ratingDiv);
+            peliculaContainer.appendChild(pelicula);
+            document.body.appendChild(peliculaContainer);
+            
         }
 
-        let peliculaContainer = document.createElement("div");
-        peliculaContainer.id = "pelicula-container";
-
-        let pelicula = document.createElement("div");
-        let titulo = document.createElement("h1");
-
-        let image = document.createElement("img");
-
-        let valorar = document.createElement
-
     }catch (error) {
-
+        console.error("Error al cargar la película:", error);
+        const popup = document.createElement("div");
+        popup.id = "popup-container";
+        popup.classList.add("popup");
+        popup.innerHTML = `
+            <div class="popup-content">
+                <span class="close">&times;</span>
+                <h2>Error al cargar la película</h2>
+                <p>${error.message}</p>
+            </div>
+        `;
+        document.body.appendChild(popup);
+        const closeBtn = popup.querySelector(".close");
+        closeBtn.onclick = function() {
+            popup.remove();
+            document.body.classList.remove('body-no-scroll');
+        };
     }
 }
 

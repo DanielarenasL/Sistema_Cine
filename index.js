@@ -166,6 +166,36 @@ app.get('/getpeliculas', async (req, res) => {
     }
 });
 
+app.get('/getpeliculabyFuncion', async (req, res) => {
+    try {
+        let coleccion = mongoose.model('funciones', funcionSchema); 
+
+        if (!req.query.id) {
+            return res.status(400).send("El parámetro 'id' es obligatorio.");
+        }
+
+        let funcionId = new ObjectId(req.query.id);
+
+        const funcion = await coleccion.findById(funcionId);
+        if (!funcion) {
+            return res.status(404).send("Función no encontrada.");
+        }
+        coleccion = mongoose.model('peliculas', peliculaSchema);
+
+        const pelicula = await coleccion.findOne({Titulo: funcion.Pelicula});
+
+        if (!pelicula) {
+            return res.status(404).send("Película no encontrada.");
+        }
+        
+        res.status(200).json(pelicula);
+
+    }catch (error) {
+        console.error("Error al obtener película por ID:", error);
+        res.status(500).send("Error al obtener película por ID.");
+    }
+});
+
 app.post('/addpelicula', async (req, res) => {
     try {
         const coleccion = mongoose.model('peliculas', peliculaSchema); 
