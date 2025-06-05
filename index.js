@@ -4,8 +4,8 @@ const bcrypt = require('bcryptjs');
 const path = require('path');
 const { connection } = require('./connection');
 const mongoose = require('mongoose');
-const { object } = require('webidl-conversions');
-const { ObjectId } = require('bson');
+const { object, double } = require('webidl-conversions');
+const { ObjectId, Decimal128, Double } = require('bson');
 const math = require('mathjs');
 
 dotenv.config();
@@ -22,7 +22,10 @@ let userSchema = new mongoose.Schema({
     Email: String,
     Username: String,
     Password: String,
-    Prefences: Array,
+    Prefences: {
+        type: [Number],
+        default: () => new Array(11).fill(0)
+    },
     History: [ObjectId],
 });
 
@@ -34,6 +37,10 @@ let peliculaSchema = new mongoose.Schema({
     Generos: [String],
     Year: Number,
     Duracion: Number,
+    Puntuacion: {
+        type: Number,
+        default: 0
+    },
 });
 
 let boletoSchema = new mongoose.Schema({
@@ -196,13 +203,66 @@ app.get('/getpeliculabyFuncion', async (req, res) => {
     }
 });
 
+app.put('/puntuarPelicula', async (req, res) => {
+    try {
+        let coleccion = mongoose.model('peliculas', peliculaSchema);
+
+        let { peliculaId, puntuacion, Username, Generos } = req.body;
+        console.log("Puntuacion: ", puntuacion);
+
+        if (!peliculaId || !puntuacion ) {
+            return res.status(400).send("Los campos 'peliculaId' y 'puntuacion' son obligatorios.");
+        }
+        peliculaId = new ObjectId(peliculaId);
+
+        const pelicula = await coleccion.findByIdAndUpdate(
+            peliculaId,
+            { $inc: { Puntuacion: puntuacion } },
+            { new: true, runValidators: true }
+        )
+        if (!pelicula) {
+            return res.status(404).send("Película no encontrada con el ID proporcionado.");
+        }
+
+        coleccion = mongoose.model('users', userSchema);
+
+        let usuario = await coleccion.findOne({ Username: Username });
+        if (!usuario) {
+            return res.status(404).send("Usuario no encontrado.");
+        }
+        console.log(usuario);
+
+        let userpreferences = usuario.Prefences;
+        let genre = ["Accion", "Terror", "Comedia", "Romance", "Ciencia ficcion", "Anime", "Infantil", "Drama", "Fantasia", "Espacial", "Suspenso"]
+
+        for (let genero of Generos) {
+            let index = genre.indexOf(genero);
+            userpreferences[index] += puntuacion;
+        }
+
+        usuario = await coleccion.findByIdAndUpdate(
+            usuario._id,
+            { Prefences: userpreferences },
+            { new: true, runValidators: true }
+        )
+        if (!usuario) {
+            return res.status(404).send("No se pudo actualizar el usuario.");
+        }
+        res.status(200).send("Película puntuada exitosamente.");
+
+    }catch (error) {
+        console.error("Error al puntuar película:", error);
+        res.status(500).send("Error al puntuar película.");
+    }
+});
+
 app.post('/addpelicula', async (req, res) => {
     try {
         const coleccion = mongoose.model('peliculas', peliculaSchema); 
 
-        let { Titulo, Imagen ,Director, Generos, Year, Duracion } = req.body;
+        let { Titulo, Imagen ,Director, Generos, Year, Duracion, Puntuacion } = req.body;
 
-        if (!Titulo || Imagen || !Director || !Generos || !Year || !Duracion) {
+        if (!Titulo || Imagen || !Director || !Generos || !Year || !Duracion ) {
             return res.status(400).send("Todos los campos son obligatorios.");
         }
 
@@ -212,7 +272,8 @@ app.post('/addpelicula', async (req, res) => {
             Director,
             Generos,
             Year,
-            Duracion
+            Duracion,
+            Puntuacion
         });
 
         await nuevaPelicula.save();

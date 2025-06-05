@@ -50,13 +50,13 @@ async function valorar(){
             let cuentaContainer = document.getElementById("cuenta-container");
             let inicioContainer = document.getElementById("inicio-container");
             let peliculaContainer = document.getElementById("pelicula-container");
-            if (peliculaContainer) { // Asegúrate de que el elemento exista antes de intentar eliminarlo
+            if (peliculaContainer) { 
                 peliculaContainer.remove();
             }
 
-            if (cuentaContainer) { // Asegúrate de que el elemento exista antes de intentar eliminarlo
+            if (cuentaContainer) {
                 cuentaContainer.remove();
-            } else if (inicioContainer) { // Asegúrate de que el elemento exista antes de intentar eliminarlo
+            } else if (inicioContainer) { 
                 inicioContainer.remove();
             }
             
@@ -72,22 +72,33 @@ async function valorar(){
             let image = document.createElement("img");
             image.src = movie.Imagen;
 
-            let maxStars = 5; // Número máximo de estrellas
+            let maxStars = 5;
             const ratingDiv = document.createElement("div");
-            ratingDiv.classList.add("rating"); // Add the class for styling
+            ratingDiv.classList.add("rating");
             let ratingValue = 0;
 
             for (let i = maxStars; i >= 1; i--) {
-                // Create the input element for the star
                 const starInput = document.createElement("input");
                 starInput.type = "radio";
                 starInput.name = "rating";
                 starInput.value = i;
                 starInput.id = `star${i}`;
 
-                starInput.addEventListener("change", (event) => {
-                    ratingValue = parseInt(event.target.value); // Convertir a número entero
+                starInput.addEventListener("change", async (event)  =>  {
+                    ratingValue = parseInt(event.target.value); 
                     console.log(`Calificación seleccionada para ${movie.Titulo}:`, ratingValue);
+                    let response = await fetch('/puntuarPelicula', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            peliculaId: movie._id,
+                            puntuacion: ratingValue,
+                            Username: localStorage.getItem("username"),
+                            Generos: movie.Generos
+                        })
+                    })
                     
                 });
 
@@ -408,6 +419,10 @@ async function cuenta() {
         if (inicioContainer) { // Asegúrate de que el elemento exista antes de intentar eliminarlo
             inicioContainer.remove();
         }
+        let peliculaContainer = document.getElementById("pelicula-container");
+        if (peliculaContainer) { // Asegúrate de que el elemento exista antes de intentar eliminarlo
+            peliculaContainer.remove();
+        }
         // Verifica si el div de la cuenta ya existe
         let cuentaContainer = document.getElementById("cuenta-container");
         if (cuentaContainer) {
@@ -430,10 +445,9 @@ async function cuenta() {
         }
         preferencias.sort((a, b) => b[1] - a[1]);
         console.log(preferencias);
-        let generos = ["Acción", "Terror", "Comedia", "Romance", "Ciencia Ficción", "Anime", "Infantil", "Drama", "Fantasia"]
+        let generos = ["Accion", "Terror", "Comedia", "Romance", "Ciencia ficcion", "Anime", "Infantil", "Drama", "Fantasia", "espacial", "Suspenso"]
 
         let gustos = [];
-
         for (let i = 0; i < 3; i++) {
             let id = preferencias[i][0];
             gustos.push(generos[id - 1]);
@@ -442,8 +456,53 @@ async function cuenta() {
         let titulo = document.createElement("h1");
         titulo.innerText = "Mi cuenta";
         cuentaContainer.appendChild(titulo);
+        
+        let table = document.createElement("table");
+        table.id = "prefences-table";
 
-        // Utilidad para crear campos y botones de edición (solo si es editable)
+        table.style.borderCollapse = 'collapse'; 
+        table.style.width = '100%';
+
+        let thead = document.createElement("thead");
+        let headerRow = document.createElement("tr");
+
+        generos.forEach(genero => {
+            let th = document.createElement("th");
+            th.textContent = genero; 
+            th.style.border = '1px solid black'; 
+            th.style.padding = '8px';
+            th.style.backgroundColor = '#f2f2f2'; 
+            headerRow.appendChild(th);
+        });
+
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        let tbody = document.createElement("tbody");
+        let dataRow = document.createElement("tr");
+
+        let values = math.matrix(data.Prefences);
+        let unitario = math.matrix(Array(((data.Prefences).length)).fill(1))
+        let size = 1 / (math.dot(values, unitario));
+
+
+        let percentages = math.multiply(size, values);
+
+        percentages = percentages.toArray()
+
+        percentages.forEach(puntuacion => {
+            let td = document.createElement("td");
+            td.textContent = `${(puntuacion * 100).toFixed(2)}%`;
+            td.style.border = '1px solid black'; 
+            td.style.padding = '8px';
+            td.style.textAlign = 'center'; 
+            dataRow.appendChild(td);
+        });
+
+        tbody.appendChild(dataRow);
+        table.appendChild(tbody);
+        
+
         function crearCampo(labelText, value, key, editable = true) {
             let wrapper = document.createElement("div");
             wrapper.className = "cuenta-campo";
@@ -476,7 +535,8 @@ async function cuenta() {
         cuentaContainer.appendChild(crearCampo("Username", data?.Username, "Username", true));
         cuentaContainer.appendChild(crearCampo("Password", "********", "Password", true));
         cuentaContainer.appendChild(crearCampo("Preferences", gustos, "Preferences", false));
-        cuentaContainer.appendChild(crearCampo("History", data?.History, "History", false));
+        cuentaContainer.appendChild(table);
+
 
         document.body.appendChild(cuentaContainer);
 
