@@ -241,3 +241,169 @@ body {
     background-color: #0056b3; /* Un tono de azul más oscuro al pasar el ratón */
 }
 
+/* General container for the account page */
+#cuenta-container {
+    font-family: Arial, sans-serif; /* A common, readable font */
+    max-width: 800px; /* Limits the width for better readability on large screens */
+    margin: 40px auto; /* Centers the container on the page with some top/bottom margin */
+    padding: 30px; /* Inner spacing */
+    background-color: #f9f9f9; /* Light background for the container */
+    border-radius: 8px; /* Slightly rounded corners */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+/* Main heading for the account page */
+#cuenta-container h1 {
+    color: #333; /* Dark grey color for the heading */
+    text-align: center; /* Center the text */
+    margin-bottom: 30px; /* Space below the heading */
+    font-size: 2.2em; /* Larger font size */
+    border-bottom: 2px solid #eee; /* A subtle line below the heading */
+    padding-bottom: 15px; /* Space between text and line */
+}
+
+/* Styles for each individual account field (Email, Username, etc.) */
+.cuenta-campo {
+    display: flex; /* Arranges items in a row */
+    align-items: center; /* Vertically aligns items in the center */
+    margin-bottom: 20px; /* Space between fields */
+    padding: 15px; /* Inner spacing for each field */
+    background-color: #fff; /* White background for each field */
+    border-radius: 5px; /* Slightly rounded corners for fields */
+    border: 1px solid #ddd; /* Light border for definition */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Very subtle shadow */
+}
+
+/* Styles for the bold labels (Email:, Username:, etc.) */
+.cuenta-campo span[style="font-weight: bold;"] {
+    color: #555; /* Medium grey color */
+    margin-right: 15px; /* Space between label and value */
+    min-width: 100px; /* Ensures labels have a consistent width */
+    font-size: 1.1em; /* Slightly larger font for labels */
+}
+
+/* Styles for the actual values (email address, username, etc.) */
+.cuenta-campo span[id^="cuenta-"] { /* Selects spans whose ID starts with "cuenta-" */
+    flex-grow: 1; /* Allows the value span to take up remaining space */
+    color: #333; /* Darker grey for the values */
+    font-size: 1.1em; /* Consistent font size */
+    word-break: break-all; /* Prevents long emails/usernames from overflowing */
+}
+
+/* Styles for the "Editar" (Edit) buttons */
+.cuenta-campo button {
+    background-color: #007bff; /* A standard blue color */
+    color: white; /* White text */
+    border: none; /* No border */
+    padding: 10px 20px; /* Padding inside the button */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Changes cursor to a pointer on hover */
+    font-size: 1em; /* Standard font size */
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+    margin-left: 20px; /* Space between value and button */
+}
+
+/* Hover effect for the "Editar" buttons */
+.cuenta-campo button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Styles for the preferences table (even though it's empty in your HTML, this sets up basic styling) */
+#preferences-table {
+    width: 100%; /* Make the table take full width */
+    border-collapse: collapse; /* Collapses borders between cells */
+    margin-top: 30px; /* Space above the table */
+    border: 1px solid #ddd; /* Light border around the table */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+#preferences-table thead th {
+    background-color: #e2e6ea; /* Light grey background for table headers */
+    color: #333; /* Dark text color */
+    padding: 12px 15px; /* Padding in headers */
+    text-align: left; /* Align text to the left */
+    border-bottom: 2px solid #ddd; /* Bottom border for headers */
+}
+
+#preferences-table tbody td {
+    padding: 10px 15px; /* Padding in table cells */
+    border-bottom: 1px solid #eee; /* Light bottom border for cells */
+}
+
+#preferences-table tbody tr:nth-child(even) {
+    background-color: #f8f8f8; /* Zebra striping for table rows */
+}
+
+#preferences-table tbody tr:hover {
+    background-color: #f1f1f1; /* Highlight row on hover */
+}
+
+/* You might want to add specific styles for table content once you have it in the tbody */
+
+/* Overall container for the movie/book details */
+#pelicula-container {
+    font-family: Arial, sans-serif; /* Consistent font */
+    max-width: 600px; /* Limits width for better content presentation */
+    margin: 40px auto; /* Centers the container */
+    padding: 30px; /* Inner spacing */
+    background-color: #f9f9f9; /* Light background */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* More pronounced shadow for a card-like effect */
+    text-align: center; /* Center content within the container */
+}
+
+/* Container for the movie title and image */
+#valorarPelicula {
+    margin-bottom: 25px; /* Space below this section */
+}
+
+/* Movie/Book Title */
+#valorarPelicula h1 {
+    color: #333; /* Dark grey */
+    font-size: 2.5em; /* Large font size for prominence */
+    margin-bottom: 20px; /* Space below the title */
+    border-bottom: 2px solid #eee; /* Subtle separator */
+    padding-bottom: 15px; /* Space between title and separator */
+}
+
+/* Movie/Book Cover Image */
+#valorarPelicula img {
+    max-width: 100%; /* Ensures image is responsive and fits container */
+    height: auto; /* Maintains aspect ratio */
+    border-radius: 8px; /* Rounded corners for the image */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* Shadow for the image */
+    margin-bottom: 25px; /* Space below the image */
+}
+
+/* Star Rating Section */
+.rating {
+    display: inline-block; /* Allows for centering of the stars */
+    direction: rtl; /* Reverses the order for easier CSS control (star 5 is leftmost) */
+}
+
+/* Hide the actual radio buttons */
+.rating input[type="radio"] {
+    display: none;
+}
+
+/* Style for the star labels */
+.rating label {
+    font-size: 2.5em; /* Large star size */
+    color: #ccc; /* Default grey color for unselected stars */
+    cursor: pointer; /* Indicates interactivity */
+    transition: color 0.3s ease; /* Smooth transition for color change */
+    padding: 0 5px; /* Space between stars */
+}
+
+/* Color stars on hover and for selected stars */
+.rating input[type="radio"]:checked ~ label, /* All labels after the checked radio button */
+.rating label:hover, /* Current hovered label */
+.rating label:hover ~ label { /* All labels after the hovered label */
+    color: #ffc107; /* Gold color for selected/hovered stars */
+}
+
+/* To ensure that when you hover over a star, it and all stars to its left light up */
+.rating label:hover {
+    color: #ffc107;
+}
+

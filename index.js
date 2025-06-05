@@ -92,7 +92,6 @@ app.get('/login', async (req, res) => {
     }
 });
 
-
 app.post('/register', async (req,res) => {
 
     try {
@@ -132,8 +131,6 @@ app.post('/register', async (req,res) => {
     }
 
 });
-
-
 
 app.get('/getuser', async (req, res) => {
     try {
@@ -233,7 +230,7 @@ app.put('/puntuarPelicula', async (req, res) => {
         console.log(usuario);
 
         let userpreferences = usuario.Prefences;
-        let genre = ["Accion", "Terror", "Comedia", "Romance", "Ciencia ficcion", "Anime", "Infantil", "Drama", "Fantasia", "Espacial", "Suspenso"]
+        let genre = ["Accion", "Terror", "Comedia", "Romance", "Ciencia ficcion", "Anime", "Infantil", "Drama", "Fantasia", "Espacial", "Suspenso", "Mounstruos"]
 
         for (let genero of Generos) {
             let index = genre.indexOf(genero);

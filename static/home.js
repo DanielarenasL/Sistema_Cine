@@ -281,6 +281,7 @@ async function comprarBoleto(tituloPelicula) {
                 <p>Seleccione una función:</p>
                 
                 <select id="funciones-select">
+                    <option></option>
                     ${funciones.map(funcion => `<option value="${funcion._id}">${IsoToHour(funcion.Hora)}</option>`).join('')}
                 </select>
                 <div id="selectAsiento"></div>
@@ -446,7 +447,7 @@ async function cuenta() {
         }
         preferencias.sort((a, b) => b[1] - a[1]);
         console.log(preferencias);
-        let generos = ["Accion", "Terror", "Comedia", "Romance", "Ciencia ficcion", "Anime", "Infantil", "Drama", "Fantasia", "espacial", "Suspenso"]
+        let generos = ["Accion", "Terror", "Comedia", "Romance", "Ciencia ficcion", "Anime", "Infantil", "Drama", "Fantasia", "espacial", "Suspenso", "Mounstruos"]
 
         let gustos = [];
         for (let i = 0; i < 3; i++) {
