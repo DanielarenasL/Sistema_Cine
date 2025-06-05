@@ -140,7 +140,6 @@ async function valorar(){
     }
 }
 
-
 async function inicio() {
     try {
         closeBtn.onclick(); // Cierra el sidebar si está abierto
@@ -371,7 +370,6 @@ async function comprarBoleto(tituloPelicula) {
     }
 }
 
-
 async function confirmarcompra(funcion) {
     try {
         let asientosSeleccionados = funcion.Asientos;
@@ -398,6 +396,8 @@ async function confirmarcompra(funcion) {
         if (!data.ok) {
             throw new Error("Error al actualizar la función");
         }
+        alert("Compra exitosa")
+        console.log('comprado');
 
         let username = localStorage.getItem("username");
 
@@ -408,6 +408,8 @@ async function confirmarcompra(funcion) {
             },
             body: JSON.stringify({ BoletoId: _id, Username: username })
         });
+
+        
 
     }catch (error) {
         console.error("Error al confirmar compra:", error);
