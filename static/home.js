@@ -66,6 +66,7 @@ async function valorar(){
 
 
             let pelicula = document.createElement("div");
+            pelicula.id = "valorarPelicula";
             let titulo = document.createElement("h1");
             titulo.innerText = movie.Titulo;
 

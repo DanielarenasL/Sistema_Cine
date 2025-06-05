@@ -177,3 +177,67 @@ body {
   color: #6f00ff;
   transition: color 0.3s;
 }
+
+
+/* Estilos generales para el contenedor de la película */
+.pelicula {
+    border: 1px solid #ddd; /* Borde suave */
+    border-radius: 8px;    /* Esquinas redondeadas */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil para darle profundidad */
+    padding: 20px;         /* Espaciado interno */
+    margin: 20px;          /* Margen alrededor de cada tarjeta de película */
+    max-width: 300px;      /* Ancho máximo para que no se extienda demasiado */
+    text-align: center;    /* Centra el texto y los elementos */
+    background-color: #fff; /* Fondo blanco */
+    font-family: Arial, sans-serif; /* Fuente legible */
+    transition: transform 0.2s ease-in-out; /* Transición suave para el hover */
+}
+
+/* Efecto al pasar el ratón por encima (opcional) */
+.pelicula:hover {
+    transform: translateY(-5px); /* Eleva la tarjeta ligeramente */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Aumenta la sombra */
+}
+
+/* Estilos para el título de la película */
+.pelicula h2 {
+    color: #333;             /* Color de texto oscuro */
+    margin-top: 0;           /* Elimina el margen superior predeterminado */
+    margin-bottom: 15px;     /* Espacio debajo del título */
+    font-size: 1.8em;        /* Tamaño de fuente más grande */
+}
+
+/* Estilos para la imagen de la película */
+.pelicula img {
+    max-width: 100%;         /* Asegura que la imagen no se salga del contenedor */
+    height: auto;            /* Mantiene la proporción de la imagen */
+    border-radius: 4px;      /* Esquinas ligeramente redondeadas para la imagen */
+    margin-bottom: 15px;     /* Espacio debajo de la imagen */
+}
+
+/* Estilos para los párrafos de información */
+.pelicula p {
+    color: #555;             /* Color de texto gris */
+    margin-bottom: 8px;      /* Espacio entre párrafos */
+    font-size: 0.95em;       /* Tamaño de fuente ligeramente más pequeño */
+    line-height: 1.4;        /* Altura de línea para mejor legibilidad */
+}
+
+/* Estilos para el botón */
+.pelicula button {
+    background-color: #007bff; /* Color de fondo azul */
+    color: white;              /* Texto blanco */
+    border: none;              /* Sin borde */
+    padding: 10px 20px;        /* Relleno interno */
+    border-radius: 5px;        /* Esquinas redondeadas */
+    cursor: pointer;           /* Cambia el cursor a una mano al pasar por encima */
+    font-size: 1em;            /* Tamaño de fuente del botón */
+    margin-top: 15px;          /* Espacio encima del botón */
+    transition: background-color 0.3s ease; /* Transición suave para el color */
+}
+
+/* Efecto al pasar el ratón por encima del botón */
+.pelicula button:hover {
+    background-color: #0056b3; /* Un tono de azul más oscuro al pasar el ratón */
+}
+
